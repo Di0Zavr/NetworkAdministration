@@ -1,0 +1,40 @@
+---
+- name: make file operations
+  hosts: my_servers
+
+  vars:
+    first_text: first_text_content
+    second_text: second_text_content
+    home: "{{ lookup('env', 'HOME') }}"
+
+  tasks:
+  - name: create file
+    shell:
+      cmd: "echo {{ first_text }} > $HOME/test.txt"
+
+  - name: read file data first time
+    shell:
+      cmd: "cat $HOME/test.txt"
+    register: data
+
+  - name: file data in stdout
+    debug:
+      msg: "{{ data.stdout }}"
+
+  - name: change file date
+    shell:
+      cmd: "echo {{ second_text }} > test.txt"
+
+  - name: read file data second time
+    shell:
+      cmd: "cat $HOME/test.txt"
+    register: data
+
+  - name: read file second time
+    debug:
+      msg: "{{ data.stdout }}"
+
+  - name: delete file
+    file:
+      path: "test.txt"
+      state: absent
